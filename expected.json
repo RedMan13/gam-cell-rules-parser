@@ -1,0 +1,47 @@
+[
+    {
+        "command": "function runner",
+        "name": "imp",
+        "inputs": [
+            {
+                "command": "string/number",
+                "value": "relative moveable vertically"
+            }
+        ]
+    },
+    {
+        "command": "function definition",
+        "name": "tick",
+        "inputs": [
+            ""
+        ],
+        "code": [
+            {
+                "command": "action",
+                "variant": "u>",
+                "input": {
+                    "command": "up direction",
+                    "get": true
+                }
+            },
+            {
+                "command": "up direction",
+                "get": true
+            }
+        ]
+    },
+    {
+        "command": "triger",
+        "variant": "t:",
+        "func": {
+            "command": "function runner",
+            "name": "tick",
+            "inputs": [
+                {
+                    "command": "nop"
+                }
+            ],
+            "get": true
+        }
+    }
+]

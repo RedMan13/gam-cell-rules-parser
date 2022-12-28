@@ -1,0 +1,11 @@
+name: Remote Dispatch Action Initiator
+#test
+on: [push]
+
+jobs:
+  ping-pong:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate
+        uses: peter-evans/repository-dispatch@v2.0.1
+        run: node .
