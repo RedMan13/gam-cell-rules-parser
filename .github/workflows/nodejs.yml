@@ -7,7 +7,7 @@ jobs:
   Validate:
     runs-on: ubuntu-latest
     env:
-      token: ${{ github.token }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Compile
         run: |
