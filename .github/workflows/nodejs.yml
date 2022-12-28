@@ -1,4 +1,4 @@
-name: Remote Dispatch Action Initiator
+name: Validate Changes
 #test
 on: [push]
 
