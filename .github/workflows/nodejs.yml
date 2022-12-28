@@ -7,4 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Compile
-        run: node ../index.js
+        run: |
+          dirs
+          node ../index.js
