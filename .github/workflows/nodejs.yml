@@ -8,5 +8,4 @@ jobs:
     steps:
       - name: Compile
         run: |
-          ls
-          node ../index.js
+          node index.js
