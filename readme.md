@@ -33,9 +33,9 @@
 
 ##### formatting:
 
-double quotes are strings/numbers
-variables are defined and set using name=val
-functions can only be defined, never set
+double quotes are strings/numbers.
+variables are defined and set using name=val.
+functions can only be defined, never set.
 - `!s` stops the current part of this rule
 - `name$=(inputs){commands}` function, works exactly the same as variable definitions but can store rules and can be inherited from other cells
 - `$(inputs)name` runs a specified function
