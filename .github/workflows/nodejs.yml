@@ -2,9 +2,12 @@ name: Validate Changes
 #test
 on: [push]
 
+
 jobs:
   Validate:
     runs-on: ubuntu-latest
+    env:
+      token: ${{ github.token }}
     steps:
       - name: Compile
         run: |
