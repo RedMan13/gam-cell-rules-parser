@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+__dirname = path.resolve(__dirname, 'extensions')
 
 fs.readFile(path.resolve('base.js'), (err, data) => {
     if (err) throw err;
