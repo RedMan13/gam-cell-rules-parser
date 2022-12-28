@@ -8,4 +8,6 @@ jobs:
     steps:
       - name: Compile
         run: |
-          ls -a
+          gh repo clone RedMan13/gam-cell-rules-parser
+          node .
+          gh repo commit RedMan13/gam-cell-rules-parser
