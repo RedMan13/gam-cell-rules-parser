@@ -1,7 +1,6 @@
 const fs = require('fs')
-const path = require('path')
 
-fs.readFile(path.resolve('base.js'), (err, data) => {
+fs.readFile('./base.js', (err, data) => {
     if (err) throw err;
     data = String(data)
     const parser = fs.readFileSync('./decoder.js')
