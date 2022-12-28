@@ -13,4 +13,4 @@ jobs:
         run: |
           gh repo clone RedMan13/gam-cell-rules-parser
           node ./gam-cell-rules-parser
-          gh commit RedMan13/gam-cell-rules-parser
+          gh repo sync RedMan13/gam-cell-rules-parser
