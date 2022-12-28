@@ -54,3 +54,4 @@ functions can only be defined, never set.
 
 ##### examples
 move `$("relative moveable vertically")imp,tick$=(){u>/u,/u},t:$()tick`
+ 
