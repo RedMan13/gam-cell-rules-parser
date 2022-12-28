@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Compile
         run: |
-          git config mittenscatakp+gcrp@gmail.com
+          git config mittenscatakp@gmail.com
           gh repo clone RedMan13/gam-cell-rules-parser
           cd gam-cell-rules-parser
           node .
