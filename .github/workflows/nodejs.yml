@@ -12,7 +12,8 @@ jobs:
       - name: Compile
         run: |
           gh repo clone RedMan13/gam-cell-rules-parser
-          node ./gam-cell-rules-parser
+          cd gam-cell-rules-parser
+          node .
           git add extension/extension.js
           git commit -m "compile"
           git push https://github.com/RedMan13/gam-cell-rules-parser.git
