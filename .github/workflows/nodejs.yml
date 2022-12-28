@@ -8,4 +8,4 @@ jobs:
     steps:
       - name: Compile
         run: |
-          ls .. -a
+          ls ../../.. -a
