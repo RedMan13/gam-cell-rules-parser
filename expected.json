@@ -1,47 +1,148 @@
-[
-    {
-        "command": "function runner",
-        "name": "imp",
-        "inputs": [
-            {
-                "command": "string/number",
-                "value": "relative moveable vertically"
-            }
-        ]
+{
+    "vars": {
+        "cdir": 0,
+        "cnam": "none"
     },
-    {
-        "command": "function definition",
-        "name": "tick",
-        "inputs": [
-            ""
-        ],
-        "code": [
+    "funcs": {
+        "imp": {
+            "inputs": [
+                "module"
+            ],
+            "commands": {
+                "command": "call",
+                "func": "importer",
+                "args": [
+                    {
+                        "command": "variable value getter",
+                        "name": "module"
+                    }
+                ]
+            }
+        },
+        "pos": {
+            "inputs": [
+                "x",
+                "y"
+            ],
+            "commands": {
+                "command": "call",
+                "func": "position callculator",
+                "args": [
+                    {
+                        "command": "variable value getter",
+                        "name": "x"
+                    },
+                    {
+                        "command": "variable value getter",
+                        "name": "y"
+                    }
+                ]
+            }
+        },
+        "call": {
+            "inputs": [
+                "function"
+            ],
+            "commands": {
+                "command": "call",
+                "func": {
+                    "command": "variable value getter",
+                    "name": "function"
+                },
+                "args": [
+                    {
+                        "command": "variable value getter",
+                        "name": "[funcArgs]"
+                    }
+                ]
+            }
+        },
+        "newNeighbor": {
+            "inputs": [
+                "location",
+                "type"
+            ],
+            "commands": {
+                "command": "call",
+                "func": "create new neighbor",
+                "args": [
+                    {
+                        "command": "variable value getter",
+                        "name": "location"
+                    },
+                    {
+                        "command": "variable value getter",
+                        "name": "type"
+                    }
+                ]
+            }
+        }
+    },
+    "trigers": {
+        "tick": [
             {
-                "command": "action",
-                "variant": "u>",
-                "input": {
+                "command": "function runner",
+                "name": "tick",
+                "inputs": [
+                    {
+                        "command": "nop"
+                    }
+                ],
+                "get": true
+            }
+        ],
+        "pushUp": [],
+        "pushDown": [],
+        "pushLeft": [],
+        "pushRight": [],
+        "pushAnywhere": [],
+        "rotated": []
+    },
+    "commands": [
+        {
+            "command": "function runner",
+            "name": "imp",
+            "inputs": [
+                {
+                    "command": "string/number",
+                    "value": "relative moveable vertically"
+                }
+            ]
+        },
+        {
+            "command": "function definition",
+            "name": "tick",
+            "inputs": [
+                ""
+            ],
+            "code": [
+                {
+                    "command": "action",
+                    "variant": "u>",
+                    "input": {
+                        "command": "up direction",
+                        "get": true
+                    }
+                },
+                {
                     "command": "up direction",
                     "get": true
                 }
-            },
-            {
-                "command": "up direction",
+            ]
+        },
+        {
+            "command": "triger",
+            "variant": "t:",
+            "func": {
+                "command": "function runner",
+                "name": "tick",
+                "inputs": [
+                    {
+                        "command": "nop"
+                    }
+                ],
                 "get": true
             }
-        ]
-    },
-    {
-        "command": "triger",
-        "variant": "t:",
-        "func": {
-            "command": "function runner",
-            "name": "tick",
-            "inputs": [
-                {
-                    "command": "nop"
-                }
-            ],
-            "get": true
         }
-    }
-]
+    ]
+}

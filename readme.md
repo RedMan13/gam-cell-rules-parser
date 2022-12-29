@@ -49,7 +49,7 @@ functions can only be defined, never set.
 - `cnam` the type of this cell
 - `imp` function, imports functions and trigers from a cell/module, usage: `$(type <string>)imp`
 - `pos` function, gets a cell at a specified location for acting on, usage: `$(x: <number>, y: <number>)pos`
-- `call` function, run a function from the main tile sprite, usage: `$(fname: <string>)call`
+- `call` function, run a function from the main tile sprite, usage: `$(fname: <string>, inputs)call`
 - `newNeighbor` function, creates a new neighbor with a specific id in a specific location, usage: `$(dir: <number|direction|position>, id: <string>)newNeighbor`
 
 ##### examples

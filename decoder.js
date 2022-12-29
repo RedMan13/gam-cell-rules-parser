@@ -19,6 +19,15 @@ const singles = {
     "/w": { command: 'counter-clockwise rotation' },
     "na": { command: 'nop' }
 }
+const trigerNames = {
+    "l:": "pushLeft",
+    "r:": "pushRight",
+    "u:": "pushUp",
+    "d:": "pushDown",
+    "a:": "pushAnywhere",
+    "c:": "rotated",
+    "t:": "tick",
+}
 
 const parseCommand = (com) => {
     if (functionRegex.test(com)) {
@@ -138,7 +147,96 @@ const parser = function(rule) {
             continue
         }
     }
-    return commands.map(parseCommand)
+    let retVal = {
+        vars: {
+            cdir: 0,
+            cnam: 'none'
+        },
+        funcs: {
+            imp: {
+                inputs: ['module'],
+                commands: { 
+                    command: 'call', 
+                    func: 'importer', 
+                    args: [
+                        {
+                            command: 'variable value getter',
+                            name: 'module'
+                        }
+                    ] 
+                }
+            },
+            pos: {
+                inputs: ['x', 'y'],
+                commands: { 
+                    command: 'call', 
+                    func: 'position callculator' ,
+                    args: [
+                        {
+                            command: 'variable value getter',
+                            name: 'x'
+                        },
+                        {
+                            command: 'variable value getter',
+                            name: 'y'
+                        }
+                    ] 
+                }
+            },
+            call: {
+                inputs: ['function'],
+                commands: { 
+                    command: 'call', 
+                    func: {
+                        command: 'variable value getter',
+                        name: 'function'
+                    },
+                    args: [
+                        {
+                            command: 'variable value getter',
+                            name: '[funcArgs]'
+                        }
+                    ]
+                }
+            },
+            newNeighbor: {
+                inputs: ['location', 'type'],
+                commands: { 
+                    command: 'call', 
+                    func: 'create new neighbor',
+                    args: [
+                        {
+                            command: 'variable value getter',
+                            name: 'location'
+                        },
+                        {
+                            command: 'variable value getter',
+                            name: 'type'
+                        }
+                    ]
+                }
+            }
+        },
+        trigers: {
+            tick: [],
+            pushUp: [],
+            pushDown: [],
+            pushLeft: [],
+            pushRight: [],
+            pushAnywhere: [],
+            rotated: []
+        },
+        commands: []
+    }
+    retVal.commands = commands = commands.map(command => {
+        command = parseCommand(command)
+        if (command.command === 'triger') {
+            retVal.trigers[trigerNames[command.variant]].push(command.func)
+        }
+        return command
+    })
+
+    return retVal
 }
 
 module.exports = parser

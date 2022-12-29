@@ -1,6 +1,6 @@
 const fs = require('fs')
 let old__dirname = __dirname.slice(0, -10)
-if (!__dirname.endsWith('/extension')) {
+if (!__dirname.endsWith('extension')) {
     old__dirname = __dirname
     __dirname += '/extension'
 }
