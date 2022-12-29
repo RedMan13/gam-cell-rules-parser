@@ -8,7 +8,8 @@ class cellParser {
         return {
             id: 'cellparser',
             name: 'Gam Cell Rule Parser',
-            color1: '#4576b4d',
+            color1: '#ffbb00',
+            color2: '#ffaa00',
             blocks: [
                 {
                     opcode: 'parsetextcodeintojson',
