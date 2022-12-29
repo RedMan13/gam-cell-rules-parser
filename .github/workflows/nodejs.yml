@@ -16,5 +16,6 @@ jobs:
           git config --global user.name "RedMan13"
           cd gam-cell-rules-parser
           node .
+          git add "./extension/extension.js"
           git commit -m "compile"
           git push https://github.com/RedMan13/gam-cell-rules-parser.git
