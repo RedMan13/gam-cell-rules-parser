@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Compile
         run: |
-          gh repo clone RedMan13/gam-cell-rules-parser
+          git clone "https://github.com/RedMan13/gam-cell-rules-parser.git"
           git config --global user.email "godslayerakp@gmail.com"
           git config --global user.name "RedMan13"
           cd gam-cell-rules-parser
           node .
           git add "./extension/extension.js"
           git commit -m "compile"
-          git push 
+          git push "https://github.com/RedMan13/gam-cell-rules-parser.git"
