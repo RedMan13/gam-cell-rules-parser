@@ -12,7 +12,7 @@ fs.readFile(extBase, (err, data) => {
     if (err) throw err;
     data = String(data)
     const parser = fs.readFileSync(decoder)
-    const ext = Buffer.from(parser + '\n\n\n' + data)
+    const ext = Buffer.from('let module = {}\n' + parser + '\n\n\n' + data)
     fs.writeFileSync(extFile, ext)
     fs.readFile(extFile, (err, data) => {
         if (err) throw err
