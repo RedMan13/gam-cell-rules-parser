@@ -9,15 +9,15 @@ const variableGetter = /@(.*)/g
 const ifelse = /(.*)\?(.*)\|(.*)/g
 
 const singles = {
-    '!s': { command: 'stop' },
-    "/l": { command: 'left direction' },
-    "/r": { command: 'right direction' },
-    "/u": { command: 'up direction' },
-    "/d": { command: 'down direction' },
-    "/m": { command: 'triger direction' },
-    "/c": { command: 'clockwise rotation' },
-    "/w": { command: 'counter-clockwise rotation' },
-    "na": { command: 'nop' }
+    '!s': { type: 'stop' },
+    "/l": { type: 'left direction' },
+    "/r": { type: 'right direction' },
+    "/u": { type: 'up direction' },
+    "/d": { type: 'down direction' },
+    "/m": { type: 'triger direction' },
+    "/c": { type: 'clockwise rotation' },
+    "/w": { type: 'counter-clockwise rotation' },
+    "na": { type: 'nop' }
 }
 const trigerNames = {
     "l:": "pushLeft",
@@ -28,15 +28,24 @@ const trigerNames = {
     "c:": "rotated",
     "t:": "tick",
 }
+const commandValues = {
+    'left direction': function(com, ret) { return 3 },
+    'right direction': function(com, ret) { return 1 },
+    'up direction': function(com, ret) { return 0 },
+    'down direction': function(com, ret) { return 2 },
+    'string/number': function(com, ret) { return com.value },
+    'variable value getter': function(com, ret) { return ret[com.name] }
+}
 
 const parseCommand = (com) => {
+    console.log(com)
     if (functionRegex.test(com)) {
         const command = com.split(functionRegex)
         return {
-            command: 'function definition',
+            type: 'function definition',
             name: command[1],
-            inputs: command[2].split(','),
-            code: command[3].split(',').map(parseCommand)
+            inputs: command[2].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')),
+            code: command[3].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')).map(parseCommand)
         }
     }
 
@@ -45,7 +54,7 @@ const parseCommand = (com) => {
         const input = parseCommand(command[2])
         input.get = true
         return {
-            command: 'triger',
+            type: 'triger',
             variant: command[1],
             func: input
         }
@@ -54,9 +63,9 @@ const parseCommand = (com) => {
     if (functionRunner.test(com)) {
         const command = com.split(functionRunner)
         return {
-            command: 'function runner',
+            type: 'function runner',
             name: command[2],
-            inputs: command[1].split(',').map(parseCommand)
+            inputs: command[1].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')).map(parseCommand)
         }
     }
     
@@ -65,7 +74,7 @@ const parseCommand = (com) => {
         const input = parseCommand(command[2])
         input.get = true
         return {
-            command: 'variable definition',
+            type: 'variable definition',
             name: command[1],
             value: input
         }
@@ -74,7 +83,7 @@ const parseCommand = (com) => {
     if (variableGetter.test(com)) {
         const command = com.split(variableGetter)
         return {
-            command: 'variable value getter',
+            type: 'variable value getter',
             name: command[1]
         }
     }
@@ -88,7 +97,7 @@ const parseCommand = (com) => {
         const input3 = parseCommand(command[3])
         input3.get = true
         return {
-            command: 'if else',
+            type: 'if else',
             name: input1,
             true: input2,
             false: input3
@@ -100,7 +109,7 @@ const parseCommand = (com) => {
         const input = parseCommand(command[2])
         input.get = true
         return {
-            command: 'action',
+            type: 'action',
             variant: command[1],
             input: input
         }
@@ -111,7 +120,7 @@ const parseCommand = (com) => {
         const input = parseCommand(command[2])
         input.get = true
         return {
-            command: 'data reader',
+            type: 'data reader',
             variant: command[1],
             input: input
         }
@@ -120,12 +129,12 @@ const parseCommand = (com) => {
     if (string.test(com)) {
         const command = com.split(string)
         return {
-            command: 'string/number',
+            type: 'string/number',
             value: command[1],
         }
     }
     
-    return singles[com] ? singles[com] : singles['na']
+    return singles[com] ? singles[com] : Object.assign(singles['na'], { orignal: com })
 }
 
 const parser = function(rule) {
@@ -148,6 +157,7 @@ const parser = function(rule) {
         }
     }
     let retVal = {
+        errors: [],
         vars: {
             cdir: 0,
             cnam: 'none'
@@ -155,68 +165,85 @@ const parser = function(rule) {
         funcs: {
             imp: {
                 inputs: ['module'],
-                commands: { 
-                    command: 'call', 
-                    func: 'importer', 
-                    args: [
-                        {
-                            command: 'variable value getter',
-                            name: 'module'
-                        }
-                    ] 
-                }
+                commands: [
+                    { 
+                        type: 'call', 
+                        func: 'importer', 
+                        args: [
+                            {
+                                type: 'variable value getter',
+                                name: 'module'
+                            }
+                        ] 
+                    }
+                ]
             },
             pos: {
                 inputs: ['x', 'y'],
-                commands: { 
-                    command: 'call', 
-                    func: 'position callculator' ,
-                    args: [
-                        {
-                            command: 'variable value getter',
-                            name: 'x'
-                        },
-                        {
-                            command: 'variable value getter',
-                            name: 'y'
+                commands: [
+                    {
+                        type: 'action',
+                        variant: 't>',
+                        input: { 
+                            type: 'call', 
+                            func: 'position callculator' ,
+                            args: [
+                                {
+                                    type: 'variable value getter',
+                                    name: 'x'
+                                },
+                                {
+                                    type: 'variable value getter',
+                                    name: 'y'
+                                }
+                            ] 
                         }
-                    ] 
-                }
+                    }
+                ]
             },
             call: {
                 inputs: ['function'],
-                commands: { 
-                    command: 'call', 
-                    func: {
-                        command: 'variable value getter',
-                        name: 'function'
-                    },
-                    args: [
-                        {
-                            command: 'variable value getter',
-                            name: '[funcArgs]'
+                commands: [
+                    {
+                        type: 'action',
+                        variant: 't>',
+                        input: { 
+                            type: 'call', 
+                            func: {
+                                type: 'variable value getter',
+                                name: 'function'
+                            },
+                            args: [
+                                {
+                                    type: 'variable value getter',
+                                    name: '[funcArgs]'
+                                }
+                            ]
                         }
-                    ]
-                }
+                    }
+                ]
             },
             newNeighbor: {
                 inputs: ['location', 'type'],
-                commands: { 
-                    command: 'call', 
-                    func: 'create new neighbor',
-                    args: [
-                        {
-                            command: 'variable value getter',
-                            name: 'location'
-                        },
-                        {
-                            command: 'variable value getter',
-                            name: 'type'
-                        }
-                    ]
-                }
+                commands: [
+                    { 
+                        type: 'call', 
+                        func: 'create new neighbor',
+                        args: [
+                            {
+                                type: 'variable value getter',
+                                name: 'location'
+                            },
+                            {
+                                type: 'variable value getter',
+                                name: 'type'
+                            }
+                        ]
+                    }
+                ]
             }
         },
+        imports: [],
         trigers: {
             tick: [],
             pushUp: [],
@@ -230,8 +257,25 @@ const parser = function(rule) {
     }
     retVal.commands = commands = commands.map(command => {
         command = parseCommand(command)
-        if (command.command === 'triger') {
+        if (command.type === 'triger') {
             retVal.trigers[trigerNames[command.variant]].push(command.func)
+        }
+        if (command.type === 'function definition') {
+            retVal.funcs[command.name] = {
+                inputs: command.inputs,
+                commands: command.code
+            }
+        }
+        if (command.type === 'variable definition') {
+            if (!commandValues[command.value.type]) {
+                retVal.errors.push(`cannot set the value of a variable to a command with no default return value\ncommand: ${JSON.parse(command)}\nvalue type: ${command.value.type}`)
+                return singles['na']
+            }
+            retVal.vars[command.name] = commandValues[command.value.type](command, retVal)
+        }
+        if (command.type === 'nop' && command.orignal !== null) retVal.errors.push(`invalid command/command structure: ${command.orignal}`)
+        if (command.type === 'function runner' && command.name === 'imp') {
+            retVal.imports.push(command.inputs[0].value)
         }
         return command
     })

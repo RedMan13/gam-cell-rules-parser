@@ -1,4 +1,4 @@
-##### movements
+#### movements
 
 - `/l` move left
 - `/r` move right
@@ -8,7 +8,7 @@
 - `/c` rotate clockwise
 - `/w` rotate counter-clockwise
 
-##### trigers
+#### trigers
 
 - `l:` triger on cells pushing left
 - `r:` triger on cells pushing right
@@ -18,7 +18,7 @@
 - `c:` triger on cells rotating this cell
 - `t:` trigers every time this cell is ticked
 
-##### actions
+#### actions
 
 - `l>` move the cell on the left in a given way
 - `r>` move the cell on the right in a given way
@@ -26,12 +26,12 @@
 - `d>` move the cell on the down in a given way
 - `t>` return a value, ends this functions execution and sets the get value of this function to the returned value
 
-##### data readers
+#### data readers
 - `?d` the direction of a given cell
 - `?n` the id of the given cell
 - `?c` check if there is a cell in a given location
 
-##### formatting:
+#### formatting:
 
 double quotes are strings/numbers.
 variables are defined and set using name=val.
@@ -43,7 +43,7 @@ functions can only be defined, never set.
 - `?|` run a command if the thing on the left of it is true, formated as `t/r?com|otrcom`: t/r is true/false, com is command, otrcom is other command
 - `na` do nothing
 
-##### internal vars
+#### internal vars
 
 - `cdir` current direction
 - `cnam` the type of this cell
@@ -52,5 +52,25 @@ functions can only be defined, never set.
 - `call` function, run a function from the main tile sprite, usage: `$(fname: <string>, inputs)call`
 - `newNeighbor` function, creates a new neighbor with a specific id in a specific location, usage: `$(dir: <number|direction|position>, id: <string>)newNeighbor`
 
-##### examples
+##### imports
+
+- `moveable verticaly` when imported allows the cell to be pushed on the vertical axis
+- `relative moveable verticaly` when imported allows the cell to be pushed up and down
+- `moveable horizontally` when imported allows the cell to be pushed on the horizontal axis
+- `relative moveable horizontally` when imported allows the cell to be pushed left and right
+- `moveable left` when imported allows the cell to be pushed left
+- `moveable right` when imported allows the cell to be pushed right
+- `moveable up` when imported allows the cell to be pushed up
+- `moveable down` when imported allows the cell to be pushed down
+- `relative moveable left` when imported allows the cell to be pushed left
+- `relative moveable right` when imported allows the cell to be pushed right
+- `relative moveable up` when imported allows the cell to be pushed up
+- `relative moveable down` when imported allows the cell to be pushed down
+- `moveable any` when imported allows the cell to be pushed in any direction
+- `board manipulation` allows the cell to modify the level in any way it wants
+- `random number` adds functions for generating random numbers
+- `sleep` adds a function for pausing the execution of code by this cell
+
+
+#### examples
 move `$("relative moveable vertically")imp,tick$=(){u>/u,/u},t:$()tick`
