@@ -13,9 +13,4 @@ fs.readFile(extBase, (err, data) => {
     data = String(data)
     const parser = fs.readFileSync(decoder)
     const ext = Buffer.from('let module = {}\n' + parser + '\n\n\n' + data)
-    fs.writeFileSync(extFile, ext)
-    fs.readFile(extFile, (err, data) => {
-        if (err) throw err
-        fs.writeFileSync(extFile, '// data:text/javascript;base64,' + ext.toString('base64') + '\n\n' + String(data))
-    })
 })
