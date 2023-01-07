@@ -160,7 +160,8 @@ const parser = function(rule) {
         errors: [],
         vars: {
             cdir: 0,
-            cnam: 'none'
+            cnam: 'none',
+            pos: 0
         },
         funcs: {
             imp: {
