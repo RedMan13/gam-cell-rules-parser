@@ -1,13 +1,13 @@
-let module = {}
-const actions = /(.>)(.*)/g
-const string = /\"(.*)\"/g
-const trigers = /(.:)(.*)/g
-const data = /(\?.)(.*)/g
-const functionRunner = /\$\((.*)\)(.*)/g
-const functionRegex = /(.*)\$=\((.*)\){(.*)}/g
-const variable = /(.*)\=(.*)/g
-const variableGetter = /@(.*)/g
-const ifelse = /(.*)\?(.*)\|(.*)/g
+let module = {};
+const actions = /(.>)(.*)/g;
+const string = /\"(.*)\"/g;
+const trigers = /(.:)(.*)/g;
+const data = /(\?.)(.*)/g;
+const functionRunner = /\$\((.*)\)(.*)/g;
+const functionRegex = /(.*)\$=\((.*)\){(.*)}/g;
+const variable = /(.*)\=(.*)/g;
+const variableGetter = /@(.*)/g;
+const ifelse = /(.*)\?(.*)\|(.*)/g;
 
 const singles = {
     '!s': { type: 'stop' },
@@ -19,7 +19,7 @@ const singles = {
     "/c": { type: 'clockwise rotation' },
     "/w": { type: 'counter-clockwise rotation' },
     "na": { type: 'nop' }
-}
+};
 const trigerNames = {
     "l:": "pushLeft",
     "r:": "pushRight",
@@ -28,7 +28,7 @@ const trigerNames = {
     "a:": "pushAnywhere",
     "c:": "rotated",
     "t:": "tick",
-}
+};
 const commandValues = {
     'left direction': function(com, ret) { return 3 },
     'right direction': function(com, ret) { return 1 },
@@ -36,125 +36,125 @@ const commandValues = {
     'down direction': function(com, ret) { return 2 },
     'string/number': function(com, ret) { return com.value },
     'variable value getter': function(com, ret) { return ret[com.name] }
-}
+};
 
 const parseCommand = (com) => {
-    console.log(com)
+    console.log(com);
     if (functionRegex.test(com)) {
-        const command = com.split(functionRegex)
+        const command = com.split(functionRegex);
         return {
             type: 'function definition',
             name: command[1],
             inputs: command[2].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')),
             code: command[3].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')).map(parseCommand)
-        }
+        };
     }
 
     if (trigers.test(com)) {
-        const command = com.split(trigers)
-        const input = parseCommand(command[2])
-        input.get = true
+        const command = com.split(trigers);
+        const input = parseCommand(command[2]);
+        input.get = true;
         return {
             type: 'triger',
             variant: command[1],
             func: input
-        }
+        };
     }
     
     if (functionRunner.test(com)) {
-        const command = com.split(functionRunner)
+        const command = com.split(functionRunner);
         return {
             type: 'function runner',
             name: command[2],
             inputs: command[1].replaceAll(/\\,/g, '<COMMA>').split(',').map(x => x.replaceAll('<COMMA>', ',')).map(parseCommand)
-        }
+        };
     }
     
     if (variable.test(com)) {
-        const command = com.split(variable)
-        const input = parseCommand(command[2])
-        input.get = true
+        const command = com.split(variable);
+        const input = parseCommand(command[2]);
+        input.get = true;
         return {
             type: 'variable definition',
             name: command[1],
             value: input
-        }
+        };
     }
     
     if (variableGetter.test(com)) {
-        const command = com.split(variableGetter)
+        const command = com.split(variableGetter);
         return {
             type: 'variable value getter',
             name: command[1]
-        }
+        };
     }
     
     if (ifelse.test(com)) {
-        const command = com.split(ifelse)
-        const input1 = parseCommand(command[1])
-        input1.get = true
-        const input2 = parseCommand(command[2])
-        input2.get = true
-        const input3 = parseCommand(command[3])
-        input3.get = true
+        const command = com.split(ifelse);
+        const input1 = parseCommand(command[1]);
+        input1.get = true;
+        const input2 = parseCommand(command[2]);
+        input2.get = true;
+        const input3 = parseCommand(command[3]);
+        input3.get = true;
         return {
             type: 'if else',
             name: input1,
             true: input2,
             false: input3
-        }
+        };
     }
 
     if (actions.test(com)) {
-        const command = com.split(actions)
-        const input = parseCommand(command[2])
-        input.get = true
+        const command = com.split(actions);
+        const input = parseCommand(command[2]);
+        input.get = true;
         return {
             type: 'action',
             variant: command[1],
             input: input
-        }
+        };
     }
     
     if (data.test(com)) {
-        const command = com.split(data)
-        const input = parseCommand(command[2])
-        input.get = true
+        const command = com.split(data);
+        const input = parseCommand(command[2]);
+        input.get = true;
         return {
             type: 'data reader',
             variant: command[1],
             input: input
-        }
+        };
     }
     
     if (string.test(com)) {
-        const command = com.split(string)
+        const command = com.split(string);
         return {
             type: 'string/number',
             value: command[1],
-        }
+        };
     }
     
-    return singles[com] ? singles[com] : Object.assign(singles['na'], { orignal: com })
-}
+    return singles[com] ? singles[com] : Object.assign(singles['na'], { orignal: com });
+};
 
 const parser = function(rule) {
-    rule = rule.replaceAll('\n', '')
-    let inside = false
-    let commands = ['']
+    rule = rule.replaceAll('\n', '');
+    let inside = false;
+    let commands = [''];
     for (let idx = 0, char = ''; idx < rule.length + 1; char = rule[idx++]) {
         if (char === ',' && !inside) {
-            commands.push('')
-            continue
+            commands.push('');
+            continue;
         }
-        commands[commands.length-1] += char
+        commands[commands.length-1] += char;
         if (char === '"' || char === '(' || char === '{') {
-            inside = true
-            continue
+            inside = true;
+            continue;
         }
         if (char === '"' || char === ')' || char === '}') {
-            inside = false
-            continue
+            inside = false;
+            continue;
         }
     }
     let retVal = {
@@ -256,36 +256,36 @@ const parser = function(rule) {
             rotated: []
         },
         commands: []
-    }
+    };
     retVal.commands = commands = commands.map(command => {
-        command = parseCommand(command)
+        command = parseCommand(command);
         if (command.type === 'triger') {
-            retVal.trigers[trigerNames[command.variant]].push(command.func)
+            retVal.trigers[trigerNames[command.variant]].push(command.func);
         }
         if (command.type === 'function definition') {
             retVal.funcs[command.name] = {
                 inputs: command.inputs,
                 commands: command.code
-            }
+            };
         }
         if (command.type === 'variable definition') {
             if (!commandValues[command.value.type]) {
-                retVal.errors.push(`cannot set the value of a variable to a command with no default return value\ncommand: ${JSON.parse(command)}\nvalue type: ${command.value.type}`)
-                return singles['na']
+                retVal.errors.push(`cannot set the value of a variable to a command with no default return value\ncommand: ${JSON.parse(command)}\nvalue type: ${command.value.type}`);
+                return singles['na'];
             }
-            retVal.vars[command.name] = commandValues[command.value.type](command, retVal)
+            retVal.vars[command.name] = commandValues[command.value.type](command, retVal);
         }
-        if (command.type === 'nop' && command.orignal !== null) retVal.errors.push(`invalid command/command structure: ${command.orignal}`)
+        if (command.type === 'nop' && command.orignal !== null) retVal.errors.push(`invalid command/command structure: ${command.orignal}`);
         if (command.type === 'function runner' && command.name === 'imp') {
-            retVal.imports.push(command.inputs[0].value)
+            retVal.imports.push(command.inputs[0].value);
         }
-        return command
-    })
+        return command;
+    });
 
-    return retVal
-}
+    return retVal;
+};
 
-module.exports = parser
+module.exports = parser;
 
 
 class cellParser {
@@ -314,24 +314,17 @@ class cellParser {
                 }
             ]
         };
-    };
+    }
     
     // Code for blocks go here
     
     parsetextcodeintojson({text}) {
-        return JSON.stringify(parser(text))
+        return JSON.stringify(parser(text));
     }
-};
+}
 
 
 
 (function() {
-    var extensionClass = cellParser;
-    if (typeof window === "undefined" || !window.vm) {
-        Scratch.extensions.register(new extensionClass());
-    } else {
-        var extensionInstance = new extensionClass(window.vm.extensionManager.runtime);
-        var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
-        window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
-    };
-})()
+    Scratch.extensions.register(new cellParser()
+    );})();
